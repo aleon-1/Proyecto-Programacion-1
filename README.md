@@ -24,6 +24,53 @@ QGIS es una herramienta efectiva para realizar análisis de datos geoespaciales,
 
 Con el polígono ya creado y proyectado, podemos empezar a analizar sus propiedades espaciales. QGIS permite realizar una serie de análisis geoespaciales, como el cálculo del área y el perímetro del polígono. Estas métricas son útiles para estudios de planificación territorial, gestión de recursos naturales y otras aplicaciones donde el tamaño y la forma de las áreas son importantes. Para calcular el área y el perímetro, se puede utilizar la herramienta de Calculadora de Campos en QGIS, donde se pueden generar nuevos campos que calculen automáticamente estos valores mediante expresiones como $area o $perimeter. Además del cálculo de áreas, QGIS permite realizar análisis de superposición espacial, lo que significa que podemos comparar el polígono con otras capas geográficas, como áreas de uso de suelo, cuerpos de agua o infraestructura. Esto es útil para identificar intersecciones entre el polígono y otras áreas de interés. Por ejemplo, si estamos analizando un polígono que representa una zona agrícola, podemos superponerlo con una capa que muestre áreas protegidas para identificar si existen solapamientos entre las dos. Otra herramienta útil en QGIS es la creación de buffers, que permite generar zonas de influencia alrededor de un polígono. Esto es particularmente útil en el análisis de proximidad. Por ejemplo, si queremos saber qué áreas se encuentran a una distancia específica de una carretera o un parque, podemos usar la herramienta de Buffer para crear una zona de influencia de 100 metros alrededor de un polígono y analizar qué otras características geográficas caen dentro de esa área. Además, QGIS permite realizar análisis de redes, lo que es útil si el polígono forma parte de una red, como una red de caminos, ríos o servicios. Se pueden analizar rutas, conectividad y otros aspectos relacionados con la estructura de la red en función de las características del polígono. Una vez completado el análisis, QGIS ofrece herramientas avanzadas para la visualización de los resultados. Podemos personalizar el estilo de los polígonos, aplicando colores, bordes y transparencias, para facilitar la interpretación de los datos. Además, es posible generar mapas temáticos que muestran los resultados del análisis de manera clara y efectiva, y exportarlos a formatos como imágenes o PDFs para su presentación.
 
+## Codigo y su funcionamiento.
+
+
+¿Cómo funciona el código?
+El código lee las coordenadas de latitud y longitud de un archivo Excel, el archivo debe tener columnas específicamente llamadas latitud y longitud, si no están de esta manera, el código generará un error. Con las coordenadas leídas, el código utiliza las funciones de QGIS para crear una capa vectorial en memoria. Las coordenadas se convierten en puntos que forman un polígono. Este polígono se cierra automáticamente añadiendo el primer punto al final. Por ultimo se guarda como un archivo Shapefile en la ruta indicada, y también se agrega a la vista de QGIS, lo que permite visualizarlo directamente en el software.
+
+Explicacion Paso a paso
+
+1. Importación de librerías:
+ 
+import pandas as pd                                                                                                                                                                                                 
+from qgis.core import QgsVectorLayer, QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsProject                                                                                                                     
+from PyQt5.QtCore import QVariant
+
+pandas: Se usa para leer el archivo Excel que contiene las coordenadas de latitud y longitud.                                                                                                                       
+qgis.core: Proporciona las herramientas necesarias de QGIS para crear y manejar capas vectoriales, geometrías y otros objetos espaciales.                                                                           
+PyQt5.QtCore: Se usa para manejar tipos de datos (en este caso, QVariant), que son necesarios para las funcionalidades de QGIS.
+
+2. Función leer_coordenadas(excel_file):                                                                                                                                                                            
+Propósito: Lee las coordenadas desde un archivo Excel.                                                                                                                                                              
+Parámetros:                                                                                                                                                                                                         
+excel_file: La ruta al archivo Excel que contiene las coordenadas.
+Funcionamiento:                                                                                                                                                                                                     
+Usa pandas.read_excel() para leer el archivo Excel.
+Se asegura de que el archivo tenga las columnas latitud y longitud (de lo contrario, lanza un error).
+Devuelve dos listas: una con las latitudes y otra con las longitudes de las coordenadas en el archivo Excel.
+
+4. Función crear_poligono_qgis(latitudes, longitudes, output_shapefile):                                                                                                                                            
+Propósito: Crea un polígono en QGIS a partir de las coordenadas de latitud y longitud y lo guarda como un archivo Shapefile.                                                                                        
+Parámetros:                                                                                                                                                                                                         
+latitudes: Lista de latitudes.                                                                                                                                                                                      
+longitudes: Lista de longitudes.                                                                                                                                                                                    
+output_shapefile: Ruta de salida para guardar el archivo Shapefile.                                                                                                                                                 
+Funcionamiento:                                                                                                                                                                                                     
+-Crea una capa vectorial en memoria para almacenar el polígono.                                                                                                                                                      
+-Añade un campo opcional id a la capa, que se usará para almacenar un valor único (en este caso, 1).                                                                                                                 
+-Crea la geometría del polígono utilizando las coordenadas de latitudes y longitudes, asegurándose de que el polígono se cierre (es decir, el primer punto se repite como el último).                                
+-Añade el polígono como una nueva "entidad" (o feature) en la capa.                                                                                                                                                  
+-Guarda la capa como un archivo Shapefile en la ubicación especificada.                                                                                                                                              
+-Añade la capa creada al proyecto de QGIS en ejecución, de modo que sea visible en el mapa de QGIS.                                                                                                                  
+5. Ejecución del código:                                                                                                                                                                                            
+excel_file = 'C:/Users/su/ruta/al archivo/de Coordenadas.xlsx'                                                                                                                                                      
+Se define la ruta del archivo Excel (excel_file) y la ruta de salida para el Shapefile (output_shapefile).                                                                                                          
+Luego, se llama a la función leer_coordenadas para leer las coordenadas desde el archivo Excel.                                                                                                                     
+Finalmente, se llama a la función crear_poligono_qgis para generar el polígono en QGIS y guardarlo como un archivo Shapefile en la ruta especificada.
+
+
 ## Resultados
 QGis y Google Maps
 Se extrajeron datos desde google maps, coordenadas de la region que necesitamos en este caso es nuestro lote, el cual tiene solo cuatro coordenadas, para ello las ingresamos a un archivo excel con el formato longitud y latitud, es de esta manera por que es una manera sencilla en el que el sofware puede leerlos sin problema, el codigo a utilizar funciona de tal manera que necesita de libreriapara prcesar datos de los cuales son leidos para genearr un archivo shape que contiene esta cordenadas y generra un poligono el cual tiene propiedades que podemos analizar, area y perimetro en nnuestro caso son las que necesitaremos.
@@ -48,6 +95,8 @@ INEGI ofrece datos geoespaciales detallados sobre límites administrativos, uso 
 ![Captura de pantalla 2024-12-07 173815](https://github.com/user-attachments/assets/6f78eafc-3aa7-45fb-acac-bad0a4ed3cf5)
 
 Una vez realizados los análisis espaciales, QGIS permite crear mapas temáticos que representan visualmente los resultados obtenidos. Estos mapas temáticos pueden incluir diferentes colores o símbolos para representar distintas categorías o valores de los atributos analizados, como diferentes tipos de uso de suelo o áreas con diferentes características geográficas. Estos mapas son útiles para presentar los resultados de forma clara y accesible, facilitando la interpretación y la comunicación de los resultados.
+
+## Codigo y su funcionamiento
 
 ## Conclusiones
 El objetivo principal del proyecto se centró en crear una rutina que facilite la proyección y el análisis geoespacial, permitiendo realizar trabajos de forma más eficiente y accesible. Esta herramienta busca simplificar los procesos complejos involucrados en la manipulación y análisis de datos geoespaciales, proporcionándole al usuario una manera más directa y rápida de generar los resultados necesarios. Los beneficios de contar con una rutina automatizada radican en la capacidad de representar de manera más precisa y fiel las características del terreno en cuestión, ya que se utilizan datos más específicos y detallados para crear las proyecciones y análisis. Al estar basado en una rutina programada, el sistema tiene la flexibilidad de adaptarse a distintos escenarios y necesidades. La libertad que ofrece el código permite modificar, ajustar y extender la funcionalidad del programa según los requerimientos del usuario. Esta capacidad de personalización es una de las grandes ventajas, ya que no se limita a un conjunto rígido de características, sino que puede evolucionar y ajustarse continuamente a medida que se presentan nuevas demandas o se identifican mejoras necesarias. Los usuarios tienen la oportunidad de explorar de manera profunda los datos, agregar nuevos códigos y funcionalidades, y modificar los existentes para optimizar el análisis o incluir nuevos elementos que mejoren la precisión o la relevancia de los resultados obtenidos. Esto convierte al proyecto no solo en una herramienta útil, sino en una plataforma flexible y escalable que puede adaptarse a una amplia gama de necesidades geoespaciales, independientemente del nivel de complejidad o especificidad requerido.
