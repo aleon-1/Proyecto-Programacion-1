@@ -1,7 +1,7 @@
 # Proyecto-Programacion-1
 Implementación de herramientas Python para Proyectos en QGis
 Código markdown
-# Digitalizacion de terreno por medio de herraminetas Python
+# Digitalizacion de terreno por medio de herraminetas Python-Qgis
 **Autores:**
 Leon Arias Armando
 
